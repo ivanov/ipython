@@ -108,6 +108,9 @@ class LineInfo(object):
     continue_prompt
       Is this line a continuation in a sequence of multiline input?
     
+    string_literal
+      Is this line a inside a quotation mark?
+    
     pre
       The initial esc character or whitespace.
     
@@ -129,9 +132,10 @@ class LineInfo(object):
     the_rest
       Everything else on the line.
     """
-    def __init__(self, line, continue_prompt):
+    def __init__(self, line, continue_prompt, string_literal):
         self.line            = line
         self.continue_prompt = continue_prompt
+        self.string_literal = string_literal
         self.pre, self.ifun, self.the_rest = split_user_input(line)
 
         self.pre_char       = self.pre.strip()
@@ -882,8 +886,9 @@ class MagicHandler(PrefilterHandler):
         """Execute magic functions."""
         ifun    = line_info.ifun
         the_rest = line_info.the_rest
-        cmd = '%sget_ipython().magic(%s)' % (line_info.pre_whitespace,
-                                   make_quoted_expr(ifun + " " + the_rest))
+        if not line_info.string_literal:
+            cmd = '%sget_ipython().magic(%s)' % (line_info.pre_whitespace,
+                                       make_quoted_expr(ifun + " " + the_rest))
         self.shell.log(line_info.line, cmd, line_info.continue_prompt)
         return cmd
 

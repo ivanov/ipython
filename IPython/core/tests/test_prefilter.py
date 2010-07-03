@@ -3,6 +3,7 @@
 #-----------------------------------------------------------------------------
 # Imports
 #-----------------------------------------------------------------------------
+from IPython.testing import nosepatch
 import nose.tools as nt
 
 from IPython.testing import tools as tt, decorators as dec
