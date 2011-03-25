@@ -41,3 +41,10 @@ class InteractiveShellTestCase(unittest.TestCase):
         cell of input. Yes, I did overlook that."""
         ip = get_ipython()
         ip.run_cell('')
+    def test_multiline_string_cells(self):
+        """Code sprinkled with multiline strings should execute (GH-306)"""
+        ip = get_ipython()
+        ip.run_cell('tmp=0')
+        self.assertEquals(ip.user_ns['tmp'], 0)
+        ip.run_cell('tmp=1;"""a\nb"""\n')
+        self.assertEquals(ip.user_ns['tmp'], 1)
