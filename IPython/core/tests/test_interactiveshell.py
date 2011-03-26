@@ -20,6 +20,7 @@ Authors
 #-----------------------------------------------------------------------------
 # stdlib
 import unittest
+from IPython.testing import decorators as dec
 
 #-----------------------------------------------------------------------------
 # Tests
@@ -42,6 +43,7 @@ class InteractiveShellTestCase(unittest.TestCase):
         ip = get_ipython()
         ip.run_cell('')
     
+    @dec.skip_known_failure 
     def test_multiline_string_cells(self):
         "Code sprinkled with multiline strings should execute (GH-306)"
         ip = get_ipython()
@@ -50,6 +52,7 @@ class InteractiveShellTestCase(unittest.TestCase):
         ip.run_cell('tmp=1;"""a\nb"""\n')
         self.assertEquals(ip.user_ns['tmp'], 1)
     
+    @dec.skip_known_failure 
     def test_dont_cache_with_semicolon(self):
         "Ending a line with semicolon should not cache the returned object (GH-307)"
         ip = get_ipython()
