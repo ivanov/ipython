@@ -11,10 +11,13 @@
 # Imports
 #-----------------------------------------------------------------------------
 # stdlib
+import locale
 import re
 import sys
 import types
 from datetime import datetime
+
+from IPython.utils import text
 
 #-----------------------------------------------------------------------------
 # Globals and constants
@@ -131,7 +134,7 @@ def json_clean(obj):
         return obj
     
     if isinstance(obj, bytes):
-        return obj.decode(sys.stdin.encoding or sys.getdefaultencoding(), 'replace')
+        return obj.decode(text.getdefaultencoding(), 'replace')
     
     if isinstance(obj, container_to_list) or (
         hasattr(obj, '__iter__') and hasattr(obj, 'next')):

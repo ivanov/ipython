@@ -24,7 +24,7 @@ import sys
 
 from IPython.external import argparse
 from IPython.utils.path import filefind, get_ipython_dir
-from IPython.utils import warn
+from IPython.utils import text, warn
 
 #-----------------------------------------------------------------------------
 # Exceptions
@@ -425,7 +425,7 @@ class KeyValueConfigLoader(CommandLineConfigLoader):
         """decode argv if bytes, using stin.encoding, falling back on default enc"""
         uargv = []
         if enc is None:
-            enc = sys.stdin.encoding or sys.getdefaultencoding()
+            enc = text.getdefaultencoding()
         for arg in argv:
             if not isinstance(arg, unicode):
                 # only decode if not already decoded
@@ -588,10 +588,9 @@ class ArgParseConfigLoader(CommandLineConfigLoader):
         # decode sys.argv to support unicode command-line options
         uargs = []
         for a in args:
-            if isinstance(a, str):
+            if isinstance(a, bytes):
                 # don't decode if we already got unicode
-                a = a.decode(sys.stdin.encoding or 
-                                            sys.getdefaultencoding())
+                a = a.decode(text.getdefaultencoding())
             uargs.append(a)
         self.parsed_data, self.extra_args = self.parser.parse_known_args(uargs)
 

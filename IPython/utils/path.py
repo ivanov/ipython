@@ -20,7 +20,7 @@ import tempfile
 from hashlib import md5
 
 import IPython
-from IPython.utils import warn
+from IPython.utils import text, warn
 from IPython.utils.process import system
 from IPython.utils.importstring import import_item
 
@@ -33,7 +33,7 @@ fs_encoding = sys.getfilesystemencoding()
 def _cast_unicode(s, enc=None):
     """Turn 8-bit strings into unicode."""
     if isinstance(s, bytes):
-        enc = enc or sys.getdefaultencoding()
+        enc = enc or text.getdefaultencoding()
         return s.decode(enc)
     return s
 
