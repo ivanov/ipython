@@ -1,10 +1,12 @@
+
+import locale
 import sys
 import time
 from io import StringIO
 
 from session import extract_header, Message
 
-from IPython.utils import io
+from IPython.utils import io, text
 
 #-----------------------------------------------------------------------------
 # Globals
@@ -20,6 +22,7 @@ class OutStream(object):
     # The time interval between automatic flushes, in seconds.
     flush_interval = 0.05
     topic=None
+    encoding = None
 
     def __init__(self, session, pub_socket, name):
         self.session = session
@@ -27,6 +30,8 @@ class OutStream(object):
         self.name = name
         self.parent_header = {}
         self._new_buffer()
+        self.encoding = text.getdefaultencoding()
+        
 
     def set_parent(self, parent):
         self.parent_header = extract_header(parent)
@@ -69,8 +74,7 @@ class OutStream(object):
         else:
             # Make sure that we're handling unicode
             if not isinstance(string, unicode):
-                enc = sys.stdin.encoding or sys.getdefaultencoding()
-                string = string.decode(enc, 'replace')
+                string = string.decode(self.encoding, 'replace')
             
             self._buffer.write(string)
             current_time = time.time()
