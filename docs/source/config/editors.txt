@@ -33,9 +33,12 @@ but the code has been moved to :mod:`IPython.quarantine` until it is updated.
 vim configuration
 =================
 
-Currently, vim support in IPython is broken.  Like the TextMate code,
-the vim support code has been moved to :mod:`IPython.quarantine` until it
-is updated.
+Currently, vim support in IPython lives in ``docs/examples/vim``, it was added
+in IPython 0.11 and supports two-way communication between vim and ipython. In
+other words, you can send lines or whole files from vim to IPython for
+execution, and you can get back docstrings, gui-tooltips, and object name
+completion from IPython in vim. For more information, read the `vim-ipython
+readme`_
 
 .. _emacs:
 
