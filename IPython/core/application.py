@@ -124,7 +124,7 @@ class BaseIPythonApplication(Application):
 
     overwrite = Bool(False, config=True,
         help="""Whether to overwrite existing config files when copying""")
-    auto_create = Bool(False, config=True,
+    auto_create = Bool(True, config=True,
         help="""Whether to create profile dir if it doesn't exist""")
 
     config_files = List(Unicode)

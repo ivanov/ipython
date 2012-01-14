@@ -17,7 +17,18 @@
 # Code
 #-----------------------------------------------------------------------------
 
+c = '\033[32m'
+noc = '\033[0m'
+
+from IPython.utils import coloransi
+
+c = coloransi.TermColors.Green
+noc = coloransi.TermColors.NoColor
+def colorize(l):
+    return  [c+x+noc for x in l ]
+
 def get_class_members(cls):
+    #ret = colorize(dir(cls))
     ret = dir(cls)
     if hasattr(cls,'__bases__'):
         try:
