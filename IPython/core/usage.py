@@ -413,7 +413,7 @@ The keybindings themselves are:
 - ``C-n``: next line (like down arrow)
 - ``C-f``: forward (like right arrow)
 - ``C-b``: back (like left arrow)
-- ``C-d``: delete next character.
+- ``C-d``: EOF - executes current input, or exits if input is empty
 - ``M-<``: move to the beginning of the input region.
 - ``M->``: move to the end of the input region.
 - ``M-d``: delete next word.
