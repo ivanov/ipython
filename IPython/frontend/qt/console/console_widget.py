@@ -1168,13 +1168,16 @@ class ConsoleWidget(LoggingConfigurable, QtGui.QWidget):
                 intercepted = True
 
             elif key == QtCore.Qt.Key_D:
+                print "Ctrl-D pressed:" + self.input_buffer
                 if len(self.input_buffer) == 0:
                     self.exit_requested.emit(self)
                 else:
-                    new_event = QtGui.QKeyEvent(QtCore.QEvent.KeyPress,
-                                                QtCore.Qt.Key_Delete,
-                                                QtCore.Qt.NoModifier)
-                    QtGui.qApp.sendEvent(self._control, new_event)
+                    # this is what we want to do to exit out of PDB
+                    self._append_plain_text('EOF\n')
+                    #new_event = QtGui.QKeyEvent(QtCore.QEvent.KeyPress,
+                    #                            QtCore.Qt.Key_Delete,
+                    #                            QtCore.Qt.NoModifier)
+                    #QtGui.qApp.sendEvent(self._control, new_event)
                     intercepted = True
 
         #------ Alt modifier ---------------------------------------------------
