@@ -51,6 +51,7 @@ var IPython = (function (IPython) {
             indentUnit : 4,
             mode: 'python',
             theme: 'ipython',
+            keyMap: 'vim',
             readOnly: this.read_only,
             extraKeys: {"Tab": "indentMore","Shift-Tab" : "indentLess",'Backspace':"delSpaceToPrevTabStop"},
             onKeyEvent: $.proxy(this.handle_codemirror_keyevent,this)
@@ -110,7 +111,6 @@ var IPython = (function (IPython) {
             };
         } else if (event.which === key.ESC) {
             IPython.tooltip.remove_and_cancel_tooltip(true);
-            return true;
         } else if (event.which === key.DOWNARROW && event.type === 'keydown') {
             // If we are not at the bottom, let CM handle the down arrow and
             // prevent the global keydown handler from handling it.

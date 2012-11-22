@@ -94,10 +94,13 @@ var IPython = (function (IPython) {
                 that.save_notebook();
                 event.preventDefault();
                 return false;
-            } else if (event.which === key.ESC) {
-                // Intercept escape at highest level to avoid closing 
-                // websocket connection with firefox
-                event.preventDefault();
+            // 
+            //} else if (event.which === key.ESC) {
+            //    // Intercept escape at highest level to avoid closing 
+            //    // websocket connection with firefox
+            //    // XXX: this no longer seems to be an issue -pi
+            //    // XXX: but, oddly, escape key still doesn't work in codemirror
+            //    event.preventDefault();
             } else if (event.which === key.SHIFT) {
                 // ignore shift keydown
                 return true;
@@ -128,6 +131,90 @@ var IPython = (function (IPython) {
             } else if (event.which === key.ENTER && event.ctrlKey) {
                 that.execute_selected_cell({terminal:true});
                 return false;
+            // custom keybindings for pi
+            // --------------------------
+            // I can't stand ctrl-U popping up the page source
+            // I also want to just do ctrl-. to restart kernel
+            // I also want to just do ctrl-h to show the mappings
+            // liberate the ctrl-m ghetto where possible / sensible
+            // ctrl-a and ctrl-b for cell above and below
+            // ctrl-m should toggle between markdown and code cells
+            // ctrl-k ctrl-j to active the cell above or below (move cursor)
+            // ctrl-shift-k ctrl-shift-j to move whole cells up or down
+            // TODO: learn how to move this into custom.js
+            } else if (event.which === 85 && event.ctrlKey) {
+                // clear the text within cell(ctrl-U)
+                var cell = that.get_selected_cell();
+                // TODO: delete only to beggining of line, not the full cell
+                cell.set_text('')
+                event.preventDefault();
+                return false;
+            } else if (event.which === 190 && event.ctrlKey) {
+                // Restart kernel = .  # matches qt console
+                that.restart_kernel();
+                return false;
+            } else if (event.which === 72 && event.ctrlKey) {
+                // Show keyboard shortcuts = h
+                IPython.quick_help.show_keyboard_shortcuts();
+                return false;
+            } else if (event.which === 65 && event.ctrlKey) {
+                // Insert code cell above selected = a
+                that.insert_cell_above('code');
+                return false;
+            } else if (event.which === 66 && event.ctrlKey) {
+                // Insert code cell below selected = b
+                that.insert_cell_below('code');
+                return false;
+            } else if (event.which === 74 && event.ctrlKey && event.shiftKey) {
+                // Move cell down = j
+                that.move_cell_down();
+                return false;
+            } else if (event.which === 75 && event.ctrlKey && event.shiftKey) {
+                // Move cell up = k
+                that.move_cell_up();
+                that.control_key_active = false;
+                return false;
+            } else if (event.which === 74 && event.ctrlKey) {
+                // Move cell down = j
+                that.select_next();
+                return false;
+            } else if (event.which === 75 && event.ctrlKey) {
+                // Move cell up = k
+                that.select_prev();
+                return false;
+            } else if (event.which === 77 && event.ctrlKey) {
+                // To markdown = m
+                var cell = that.get_selected_cell();
+                if ((cell instanceof IPython.CodeCell)) {
+                    that.to_markdown();
+                } else {
+                    that.to_code();
+                }
+                that.control_key_active = false;
+                return false;
+            } else if (event.which === 67 && event.ctrlKey) {
+                // Interrupt kernel with old-school ctrl-c
+                that.kernel.interrupt();
+            } else if (event.which === 79 && event.ctrlKey) {
+                // Toggle output = o
+                if (event.shiftKey){
+                    that.toggle_output_scroll();
+                } else {
+                    that.toggle_output();
+                }
+                that.control_key_active = false;
+                return false;
+            } else if (event.which === key.F2) {
+                // Run all
+                that.execute_all_cells();
+                return false;
+            } else if (event.which === key.F5) {
+                // Run all
+                that.execute_all_cells();
+                event.preventDefault();
+                return false;
+            // end custom keybindings for pi
+            // -----------------------------
             } else if (event.which === 77 && event.ctrlKey && that.control_key_active == false) {
                 that.control_key_active = true;
                 return false;
