@@ -182,16 +182,6 @@ var IPython = (function (IPython) {
                 // Move cell up = k
                 that.select_prev();
                 return false;
-            } else if (event.which === 77 && event.ctrlKey) {
-                // To markdown = m
-                var cell = that.get_selected_cell();
-                if ((cell instanceof IPython.CodeCell)) {
-                    that.to_markdown();
-                } else {
-                    that.to_code();
-                }
-                that.control_key_active = false;
-                return false;
             } else if (event.which === 67 && event.ctrlKey) {
                 // Interrupt kernel with old-school ctrl-c
                 that.kernel.interrupt();
@@ -254,8 +244,13 @@ var IPython = (function (IPython) {
                 that.control_key_active = false;
                 return false;
             } else if (event.which === 77 && that.control_key_active) {
-                // To markdown = m
-                that.to_markdown();
+                // Toggle markdown, code, raw mode = m
+                var cell = that.get_selected_cell();
+                if ((cell instanceof IPython.CodeCell)) {
+                    that.to_markdown();
+                } else {
+                    that.to_code();
+                }
                 that.control_key_active = false;
                 return false;
             } else if (event.which === 84 && that.control_key_active) {
