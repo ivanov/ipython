@@ -21,7 +21,6 @@ import io
 import os
 import glob
 import shutil
-import ast
 
 from unicodedata import normalize
 
@@ -101,7 +100,7 @@ class FileNotebookManager(NotebookManager):
             full_path = self.get_path(notebook_name, notebook_path)
             if change == "name":
                 new_path = self.get_path(data['name'], notebook_path)
-                if os.path.isfile(new_path) == False:
+                if not os.path.isfile(new_path):
                     os.rename(full_path,
                         self.get_path(data['name'], notebook_path))
                     notebook_name = data['name']
