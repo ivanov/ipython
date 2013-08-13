@@ -41,15 +41,29 @@ class NotebookManager(LoggingConfigurable):
     notebook_dir = Unicode(os.getcwdu(), config=True, help="""
             The directory to use for notebooks.
             """)
-            
+
     def named_notebook_path(self, notebook_path):
-        
+        """Given a notebook_path name, returns a (name, path) tuple, where
+        name is a .ipynb file, and path is the directory for the file.
+
+        Parameters
+        ----------
+        notebook_path : string
+            A path that may be a .ipynb name or a directory
+
+        Returns
+        -------
+        name : string or None
+            the filename of the notebook, or None if not a .ipynb extesnsion
+        path : string or None
+            the path to the directory which contains the notebook
+        """
         names = notebook_path.split('/')
-        if len(names) > 1:     
+        if len(names) > 1:
             name = names[-1]
             if name.endswith(".ipynb"):
                 name = name
-                path = notebook_path[0:-len(name)-1]+'/'
+                path = notebook_path[:-1]+'/'
             else:
                 name = None
                 path = notebook_path+'/'
@@ -65,11 +79,19 @@ class NotebookManager(LoggingConfigurable):
     
     def url_encode(self, path):
         parts = path.split('/')
-        return os.path.join(*[quote(p) for p in parts])
+        path=""
+        for part in parts:
+           part = quote(part)
+           path = os.path.join(path,part)
+        return path
 
     def url_decode(self, path):
         parts = path.split('/')
-        return os.path.join(*[unquote(p) for p in parts])
+        path=""
+        for part in parts:
+           part = unquote(part)
+           path = os.path.join(path,part)
+        return path
 
     def _notebook_dir_changed(self, name, old, new):
         """do a bit of validation of the notebook dir"""
@@ -206,7 +228,7 @@ class NotebookManager(LoggingConfigurable):
         return name
 
     def new_notebook(self, notebook_path=None):
-        """Create a new notebook and return its notebook_name."""
+        """Create a new notebook and return its notebook_id."""
         name = self.increment_filename('Untitled', notebook_path)
         metadata = current.new_metadata(name=name)
         nb = current.new_notebook(metadata=metadata)
@@ -214,7 +236,7 @@ class NotebookManager(LoggingConfigurable):
         return notebook_name
 
     def copy_notebook(self, name, path=None):
-        """Copy an existing notebook and return its new notebook_name."""
+        """Copy an existing notebook and return its notebook_id."""
         last_mod, nb = self.read_notebook_object(name, path)
         name = nb.metadata.name + '-Copy'
         name = self.increment_filename(name, path)
