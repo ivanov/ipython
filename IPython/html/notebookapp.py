@@ -65,6 +65,7 @@ from .services.kernels.kernelmanager import MappingKernelManager
 from .services.notebooks.nbmanager import NotebookManager
 from .services.notebooks.filenbmanager import FileNotebookManager
 from .services.clusters.clustermanager import ClusterManager
+from .services.contents.contentmanager import ContentManager
 
 from .base.handlers import AuthenticatedFileHandler, FileFindHandler
 
@@ -128,10 +129,12 @@ class NotebookWebApplication(web.Application):
 
     def __init__(self, ipython_app, kernel_manager, notebook_manager,
                  cluster_manager, log,
+                 content_manager,
                  base_project_url, settings_overrides):
 
         settings = self.init_settings(
             ipython_app, kernel_manager, notebook_manager, cluster_manager,
+            content_manager,
             log, base_project_url, settings_overrides)
         handlers = self.init_handlers(settings)
 
@@ -139,6 +142,7 @@ class NotebookWebApplication(web.Application):
 
     def init_settings(self, ipython_app, kernel_manager, notebook_manager,
                       cluster_manager, log,
+                      content_manager,
                       base_project_url, settings_overrides):
         # Python < 2.6.5 doesn't accept unicode keys in f(**kwargs), and
         # base_project_url will always be unicode, which will in turn
@@ -168,6 +172,7 @@ class NotebookWebApplication(web.Application):
             kernel_manager=kernel_manager,
             notebook_manager=notebook_manager,
             cluster_manager=cluster_manager,
+            content_manager=content_manager,
             
             # IPython stuff
             mathjax_url=ipython_app.mathjax_url,
@@ -191,6 +196,7 @@ class NotebookWebApplication(web.Application):
         handlers.extend(load_handlers('services.kernels.handlers'))
         handlers.extend(load_handlers('services.notebooks.handlers'))
         handlers.extend(load_handlers('services.clusters.handlers'))
+        handlers.extend(load_handlers('services.contents.handlers'))
         handlers.extend([
             (r"/files/(.*)", AuthenticatedFileHandler, {'path' : settings['notebook_manager'].notebook_dir}),
         ])
@@ -501,6 +507,7 @@ class NotebookApp(BaseIPythonApplication):
         kls = import_item(self.notebook_manager_class)
         self.notebook_manager = kls(parent=self, log=self.log)
         self.notebook_manager.load_notebook_names()
+        self.content_manager = ContentManager(parent=self, log=self.log)
         self.cluster_manager = ClusterManager(parent=self, log=self.log)
         self.cluster_manager.update_profiles()
 
@@ -519,6 +526,7 @@ class NotebookApp(BaseIPythonApplication):
         self.web_app = NotebookWebApplication(
             self, self.kernel_manager, self.notebook_manager, 
             self.cluster_manager, self.log,
+            self.content_manager,
             self.base_project_url, self.webapp_settings
         )
         if self.certfile:
