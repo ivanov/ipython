@@ -196,6 +196,14 @@ def pre_prompt_hook(self):
     to not mess up text entry)
     """
 
+    # XXX: this only does the right thing after an executed prompt, but
+    # actually gets run on a continuation prompt at the moment.
+    from IPython import get_ipython
+
+    try:
+        print "type:", type( get_ipython().ns_table['user_local']['_'])
+    except NameError:
+        pass
     return None
 
 
