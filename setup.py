@@ -71,6 +71,7 @@ from setupbase import (
     require_submodules,
     UpdateSubmodules,
     CompileCSS,
+    JavascriptVersion,
 )
 from setupext import setupext
 
@@ -234,6 +235,7 @@ setup_args['cmdclass'] = {
     'upload_wininst' : UploadWindowsInstallers,
     'submodule' : UpdateSubmodules,
     'css' : CompileCSS,
+    'jsversion' : JavascriptVersion,
 }
 
 #---------------------------------------------------------------------------
