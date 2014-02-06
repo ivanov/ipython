@@ -631,10 +631,16 @@ var IPython = (function (IPython) {
         IPython.quick_help = new IPython.QuickHelp();
     }
 
-    ShortcutManager.prototype.remove_shortcut = function (shortcut) {
+    ShortcutManager.prototype.remove_shortcut = function (shortcut, suppress_help_update) {
         shortcut = this.normalize_shortcut(shortcut);
         delete this._counts[shortcut];
         delete this._shortcuts[shortcut];
+        // update the keyboard shortcuts notebook help
+        IPython.quick_help = new IPython.QuickHelp();
+        if (!suppress_help_update) {
+            // update the keyboard shortcuts notebook help
+            IPython.quick_help = new IPython.QuickHelp();
+        }
     }
 
     ShortcutManager.prototype.count_handler = function (shortcut, event, data) {
