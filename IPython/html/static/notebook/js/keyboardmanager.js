@@ -603,7 +603,7 @@ var IPython = (function (IPython) {
         this._shortcuts = {};
     }
 
-    ShortcutManager.prototype.add_shortcut = function (shortcut, data) {
+    ShortcutManager.prototype.add_shortcut = function (shortcut, data, suppress_help_update) {
         if (typeof(data) === 'function') {
             data = {help: '', help_index: '', handler: data}
         }
@@ -616,12 +616,19 @@ var IPython = (function (IPython) {
         shortcut = this.normalize_shortcut(shortcut);
         this._counts[shortcut] = 0;
         this._shortcuts[shortcut] = data;
+        if (!suppress_help_update) {
+            // update the keyboard shortcuts notebook help
+            IPython.quick_help = new IPython.QuickHelp();
+        }
     }
 
     ShortcutManager.prototype.add_shortcuts = function (data) {
         for (var shortcut in data) {
-            this.add_shortcut(shortcut, data[shortcut]);
+            this.add_shortcut(shortcut, data[shortcut], True);
         }
+
+        // update the keyboard shortcuts notebook help
+        IPython.quick_help = new IPython.QuickHelp();
     }
 
     ShortcutManager.prototype.remove_shortcut = function (shortcut) {
