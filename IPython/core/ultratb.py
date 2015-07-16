@@ -744,6 +744,8 @@ class VerboseTB(TBTools):
 
             file = py3compat.cast_unicode(file, util_path.fs_encoding)
             link = tpl_link % file
+            if 'tmp' in file:
+                continue
             args, varargs, varkw, locals = inspect.getargvalues(frame)
 
             if func == '?':

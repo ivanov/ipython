@@ -364,6 +364,8 @@ class Pdb(OldPdb):
 
         #s = filename + '(' + `lineno` + ')'
         filename = self.canonic(frame.f_code.co_filename)
+        if 'tmp' in filename:
+            return  ''
         link = tpl_link % py3compat.cast_unicode(filename)
 
         if frame.f_code.co_name:
